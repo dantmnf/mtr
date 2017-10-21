@@ -110,10 +110,11 @@ int ipip_lookup(struct mtr_ctl *ctl, char *buf, size_t buflen, ip_t *ip, const c
                 if (cJSON_IsString(area))
                     areastr = xstrdup(area->valuestring);
 
-                pos = areastr;
                 while (cols < 5)
                 {
-                    pos = strchr(pos, '\t');
+                    pos = strchr(areastr, '\t');
+                    if(pos == NULL)
+                        break;
                     *pos = ' ';
                     cols++;
                 }

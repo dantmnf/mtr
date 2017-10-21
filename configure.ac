@@ -84,6 +84,8 @@ AM_CONDITIONAL([WITH_GETOPT], [test "x$with_getopt" = "xyes"])
 
 AC_CHECK_LIB([m], [floor], [], [AC_MSG_ERROR([No math library found])])
 
+PKG_CHECK_MODULES([CURL], [libcurl], [], [AC_MSG_ERROR([No curl library found])])
+
 # Find GTK
 AC_ARG_WITH([gtk],
   [AS_HELP_STRING([--without-gtk], [Build without the GTK+2.0 interface])],

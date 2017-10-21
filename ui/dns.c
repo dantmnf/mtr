@@ -42,6 +42,8 @@
 #include "net.h"
 #include "utils.h"
 
+int ipip_lookup(struct mtr_ctl *ctl, char *buf, size_t buflen, ip_t *ip, const char *host);
+
 struct dns_results {
     ip_t ip;
     char *name;
@@ -182,6 +184,8 @@ void dns_open(
 
             if (!fork()) {
                 int rv;
+                char ipipbuf[1024];
+                int ipiplen;
 
                 buf[strlen(buf) - 1] = 0;       /* chomp newline. */
 
@@ -192,9 +196,11 @@ void dns_open(
 
                 rv = getnameinfo((struct sockaddr *) &sa, salen,
                                  hostname, sizeof(hostname), NULL, 0, 0);
-                if (rv == 0) {
+                ipiplen = ipip_lookup(ctl, ipipbuf, sizeof(ipipbuf), &host, rv ? NULL : hostname);
+                if (rv == 0 || ipiplen)
+                {
                     snprintf(result, sizeof(result),
-                             "%s %s\n", strlongip(ctl, &host), hostname);
+                             "%s %s\t[%s]\n", strlongip(ctl, &host), hostname, ipipbuf);
 
                     rv = write(fromdns[1], result, strlen(result));
                     if (rv < 0)
@@ -233,7 +239,13 @@ void dns_ack(
     struct dns_results *r;
 
     while (fgets(buf, sizeof(buf), fromdnsfp)) {
-        sscanf(buf, "%s %s", host, name);
+        char *sp = strchr(buf, ' ');
+        char *lf = strchr(buf, '\n');
+        *sp = 0;
+        *lf = 0;
+        strncpy(host, buf, sizeof(host));
+        strncpy(name, sp + 1, sizeof(name));
+        // sscanf(buf, "%s %s", host, name);
 
         longipstr(host, &hostip, ctl->af);
         r = findip(ctl, &hostip);

@@ -57,7 +57,9 @@ mtr_SOURCES = ui/mtr.c ui/mtr.h \
               packet/cmdparse.c packet/cmdparse.h \
               ui/mtr-curses.h \
               img/mtr_icon.xpm \
-              ui/mtr-gtk.h
+              ui/mtr-gtk.h \
+			  ui/ipip.c \
+			  3rdparty/cJSON.c 3rdparty/cJSON.h
 
 if WITH_ERROR
 mtr_SOURCES += \
@@ -85,8 +87,8 @@ mtr_SOURCES += ui/gtk.c
 endif
 
 mtr_INCLUDES = $(GLIB_CFLAGS) -I$(top_builddir) -I$(top_srcdir)
-mtr_CFLAGS = $(GTK_CFLAGS) $(NCURSES_CFLAGS)
-mtr_LDADD = $(GTK_LIBS) $(NCURSES_LIBS) $(RESOLV_LIBS)
+mtr_CFLAGS = $(GTK_CFLAGS) $(NCURSES_CFLAGS) $(CURL_CFLAGS)
+mtr_LDADD = $(GTK_LIBS) $(NCURSES_LIBS) $(RESOLV_LIBS) $(CURL_LIBS)
 
 
 mtr_packet_SOURCES = \

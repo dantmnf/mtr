@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <locale.h>
 
 /* MacOSX may need this before socket.h...*/
 #if defined(HAVE_SYS_TYPES_H)
@@ -797,7 +798,7 @@ void mtr_curses_open(
 {
     int bg_col = 0;
     int i;
-
+    setlocale(LC_CTYPE, "");
     initscr();
     raw();
     noecho();

@@ -52,6 +52,7 @@ AC_CHECK_HEADERS([ \
   linux/errqueue.h \
   ncurses.h \
   ncurses/curses.h \
+  ncursesw/curses.h \
   netinet/in.h \
   socket.h \
   sys/cdefs.h \

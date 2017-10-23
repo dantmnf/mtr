@@ -199,8 +199,9 @@ void dns_open(
                 ipiplen = ipip_lookup(ctl, ipipbuf, sizeof(ipipbuf), &host, rv ? NULL : hostname);
                 if (rv == 0 || ipiplen)
                 {
+                    char *ipstr = strlongip(ctl, &host);
                     snprintf(result, sizeof(result),
-                             "%s %s\t[%s]\n", strlongip(ctl, &host), hostname, ipipbuf);
+                             "%s %s%s%s%s\n", ipstr, rv ? ipstr : hostname, ipiplen ? "\t[" : "", ipipbuf, ipiplen ? "]" : "");
 
                     rv = write(fromdns[1], result, strlen(result));
                     if (rv < 0)
